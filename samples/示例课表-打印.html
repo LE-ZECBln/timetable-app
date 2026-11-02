@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>我的课表 · 第 1 周</title><style>
+.tt-app, .tt-page {
+  --tt-ink: #0f172a;
+  --tt-muted: #64748b;
+  --tt-line: #e2e8f0;
+  --tt-soft: #f8fafc;
+  --tt-accent: #2563eb;
+  color: var(--tt-ink);
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  color-scheme: light;
+}
+.tt-app *, .tt-page * { box-sizing: border-box; }
+.tt-scroll { overflow-x: auto; padding-bottom: 4px; }
+.tt-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin: 0 0 14px 0;
+}
+.tt-title { margin: 0; font-size: 26px; line-height: 1.2; letter-spacing: -.02em; }
+.tt-subtitle { margin: 6px 0 0 0; color: var(--tt-muted); font-size: 13px; }
+.tt-badge {
+  flex: none; padding: 8px 13px; border-radius: 999px;
+  background: #eff6ff; color: #1d4ed8; font-size: 13px; font-weight: 700;
+  border: 1px solid #bfdbfe; white-space: nowrap;
+}
+.tt-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  table-layout: fixed; background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15,23,42,.05);
+}
+.tt-table th, .tt-table td {
+  border-right: 1px solid var(--tt-line); border-bottom: 1px solid var(--tt-line);
+  vertical-align: top;
+}
+.tt-table th:first-child, .tt-table td:first-child { border-left: 1px solid var(--tt-line); }
+.tt-table thead th {
+  background: #0f172a; color: #fff; font-size: 13px; font-weight: 700;
+  padding: 11px 6px; text-align: center; border-color: #1e293b;
+}
+.tt-table thead th:first-child { border-top-left-radius: 12px; }
+.tt-table thead th:last-child { border-top-right-radius: 12px; }
+.tt-table thead .tt-date { display: block; margin-top: 3px; font-size: 10px; font-weight: 400; opacity: .65; }
+.tt-corner { width: 112px; }
+.tt-time {
+  width: 112px; background: var(--tt-soft); text-align: center; padding: 10px 6px;
+  font-size: 12px; color: #475569;
+}
+.tt-time b { display: block; font-size: 13px; color: var(--tt-ink); }
+.tt-time span { display: block; margin-top: 3px; font-size: 10px; color: var(--tt-muted); }
+.tt-cell { padding: 5px; height: 84px; background: #fff; }
+.tt-cell.tt-weekend { background: #fcfdff; }
+.tt-empty { background:
+  linear-gradient(135deg, transparent 0 48%, #f1f5f9 48% 52%, transparent 52% 100%);
+  background-size: 14px 14px;
+}
+.tt-course {
+  background: var(--tt-bg, #eff6ff); color: var(--tt-fg, #1d4ed8);
+  border-left: 3px solid var(--tt-fg, #1d4ed8);
+  border-radius: 8px; padding: 7px 8px 6px 8px; min-height: 52px;
+  overflow: hidden; position: relative;
+}
+.tt-course + .tt-course { margin-top: 4px; }
+.tt-name { font-size: 12.5px; font-weight: 700; line-height: 1.3; word-break: break-word; }
+.tt-meta { margin-top: 3px; font-size: 10.5px; line-height: 1.35; opacity: .9; word-break: break-word; }
+.tt-weeks { margin-top: 2px; font-size: 9.5px; opacity: .68; }
+.tt-warn {
+  position: absolute; top: 4px; right: 5px; font-size: 11px;
+  color: #dc2626; background: #fff; border-radius: 999px; padding: 0 3px;
+}
+.tt-cell-conflict { box-shadow: inset 0 0 0 2px #fecaca; }
+.tt-section { margin-top: 18px; }
+.tt-section h3 { margin: 0 0 8px 0; font-size: 14px; }
+.tt-section ul { margin: 0; padding-left: 18px; font-size: 12px; color: #475569; }
+.tt-section li { margin: 4px 0; }
+.tt-section .tt-danger { color: #b91c1c; }
+.tt-note { margin-top: 12px; color: var(--tt-muted); font-size: 11px; }
+.tt-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 0 0; }
+.tt-stat {
+  border: 1px solid var(--tt-line); background: #fff; border-radius: 10px;
+  padding: 8px 12px; font-size: 11px; color: var(--tt-muted);
+}
+.tt-stat b { display: block; font-size: 17px; color: var(--tt-ink); }
+.tt-toolbar { margin: 0 0 14px 0; }
+.tt-print-btn {
+  border: 0; border-radius: 8px; background: #2563eb; color: #fff;
+  padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.tt-print-btn:hover { background: #1d4ed8; }
+.tt-page { background: #fff; max-width: 1240px; margin: 0 auto; padding: 24px; }
+.tt-footer { margin-top: 18px; color: var(--tt-muted); font-size: 10px; text-align: right; }
+@media print {
+  @page { size: A4 landscape; margin: 9mm; }
+  body { background: #fff !important; }
+  .tt-page { max-width: none; padding: 0; }
+  .tt-toolbar { display: none !important; }
+  .tt-table { box-shadow: none; border-radius: 0; }
+  .tt-table thead th { background: #0f172a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tt-course { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tt-cell { height: auto; min-height: 64px; }
+  tr, td, th { page-break-inside: avoid; }
+}
+</style></head><body><div class="tt-page">
+<div class="tt-head"><div><h1 class="tt-title">我的课表</h1><p class="tt-subtitle">第 1 周 · 周一至周五 · 共 20 周</p></div><div class="tt-badge">第 1 周</div></div>
+<div class="tt-toolbar"><button class="tt-print-btn" onclick="window.print()">打印 / 另存为 PDF</button></div>
+<div class="tt-scroll"><table class="tt-table">
+<colgroup><col style="width:112px">
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup><thead><tr>
+<th class="tt-corner">节次 / 时间</th>
+<th>周一<span class="tt-date">11/02</span></th>
+<th>周二<span class="tt-date">11/03</span></th>
+<th>周三<span class="tt-date">11/04</span></th>
+<th>周四<span class="tt-date">11/05</span></th>
+<th>周五<span class="tt-date">11/06</span></th>
+</tr></thead><tbody>
+<tr>
+<th class="tt-time"><b>1-2节</b><span>08:00-09:45</span></th>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#EEF0FF;--tt-fg:#3730A3" title="高等数学A
+周一 1-2节
+1-16周
+教师：张三
+教室：教A101"><div class="tt-name">高等数学A</div><div class="tt-meta">张三 · 教A101</div><div class="tt-weeks">1-16周</div></div></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+</tr>
+<tr>
+<th class="tt-time"><b>3-4节</b><span>10:00-11:45</span></th>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#FDECEC;--tt-fg:#B91C1C" title="大学英语
+周二 3-4节
+1-16周
+教师：李四
+教室：外语楼201"><div class="tt-name">大学英语</div><div class="tt-meta">李四 · 外语楼201</div><div class="tt-weeks">1-16周</div></div></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+</tr>
+<tr>
+<th class="tt-time"><b>5-6节</b><span>13:45-15:30</span></th>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#F1EFEA;--tt-fg:#57534E" title="数据结构
+周三 5-6节
+1-16周
+教师：王五
+教室：计算机楼305"><div class="tt-name">数据结构</div><div class="tt-meta">王五 · 计算机楼305</div><div class="tt-weeks">1-16周</div></div></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+</tr>
+<tr>
+<th class="tt-time"><b>7-8节</b><span>15:45-17:30</span></th>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#F4ECFF;--tt-fg:#6D28D9" title="操作系统
+周四 7-8节
+1-8周
+教师：赵六
+教室：教B202"><div class="tt-name">操作系统</div><div class="tt-meta">赵六 · 教B202</div><div class="tt-weeks">1-8周</div></div></td>
+<td class="tt-cell tt-empty"></td>
+</tr>
+<tr>
+<th class="tt-time"><b>9-10节</b><span>18:30-20:15</span></th>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#FFF0F3;--tt-fg:#BE123C" title="人工智能导论
+周一 9-10节
+1-8周
+教师：周八
+教室：线上"><div class="tt-name">人工智能导论</div><div class="tt-meta">周八 · 线上</div><div class="tt-weeks">1-8周</div></div></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell"><div class="tt-course" style="--tt-bg:#EAF8EF;--tt-fg:#15803D" title="体育（篮球）
+周五 9-10节
+1-16周
+教师：孙七
+教室：体育馆"><div class="tt-name">体育（篮球）</div><div class="tt-meta">孙七 · 体育馆</div><div class="tt-weeks">1-16周</div></div></td>
+</tr>
+<tr>
+<th class="tt-time"><b>11-12节</b><span>20:30-22:15</span></th>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+<td class="tt-cell tt-empty"></td>
+</tr>
+</tbody></table></div>
+<div class="tt-stats"><div class="tt-stat"><b>6</b>门课程</div><div class="tt-stat"><b>0</b>组冲突</div><div class="tt-stat"><b>6</b>位教师</div><div class="tt-stat"><b>6</b>间教室</div></div>
+
+
+<div class="tt-note">提示：点击课程卡片可查看教师、教室与周次；颜色由课程名称自动分配。所有解析均在本机完成。</div>
+</div></body></html>

@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.tmp/
+.venv/
+vendor_test/
+.venv_test/
+.streamlit/secrets.toml
+
+# Streamlit agent skills / local agent configs (created by the in-app nudge)
+.agents/
+.claude/
+
+# Optional: the bundled Windows dependencies are large.  If you commit this
+# project to git, ignore the folder and install requirements.txt instead.
+vendor/
+
+# Local GitHub CLI / deployment tooling (contains an auth token)
+.ghconfig/
+tools/gh/
+tools/gh.zip
